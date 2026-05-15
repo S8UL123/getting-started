@@ -1,9 +1,9 @@
 # Install the base requirements for the app.
 # This stage is to support development.
-FROM --platform=$BUILDPLATFORM python:alpine AS base
+FROM --platform=$BUILDPLATFORM python:3.12-alpine AS base
 WORKDIR /app
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 FROM --platform=$BUILDPLATFORM node:18-alpine AS app-base
 WORKDIR /app
@@ -21,7 +21,7 @@ FROM app-base AS app-zip-creator
 COPY --from=test /app/package.json /app/yarn.lock ./
 COPY app/spec ./spec
 COPY app/src ./src
-RUN apk add zip && \
+RUN apk add --no-cache zip && \
     zip -r /app.zip /app
 
 # Dev-ready container - actual files will be mounted in
